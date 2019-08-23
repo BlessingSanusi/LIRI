@@ -1,0 +1,46 @@
+___________ Movie Information ___________
+Title: undefined 
+Release Year: undefined 
+IMDB Rating: undefined 
+_________Mr. Noboby________If you haven't watched 'Mr. Nobody,' then you should: http://www.imdb.com/title/tt0485947/
+It's on Netflix!
+___________ Movie Information ___________
+Title: undefined 
+Release Year: undefined 
+IMDB Rating: undefined 
+_______EVENT INFO_________
+0
+Name of the Venue: Great Scott
+Venue Location: Allston
+Date of the Event: 2019-09-04T21:00:00
+*****************************
+_______EVENT INFO_________
+1
+Name of the Venue: Space Ballroom
+Venue Location: Hamden
+Date of the Event: 2019-09-05T20:00:00
+*****************************
+_______EVENT INFO_________
+2
+Name of the Venue: Colony
+Venue Location: Woodstock
+Date of the Event: 2019-11-14T20:00:00
+*****************************
+_______EVENT INFO_________
+3
+Name of the Venue: Milkboy
+Venue Location: Philadelphia
+Date of the Event: 2019-11-16T21:00:00
+*****************************
+_______EVENT INFO_________
+4
+Name of the Venue: Gypsy Sally's
+Venue Location: Washington
+Date of the Event: 2019-11-17T20:00:00
+*****************************
+_______EVENT INFO_________
+5
+Name of the Venue: The Plowright Theatre
+Venue Location: Scunthorpe
+Date of the Event: 2020-01-19T19:30:00
+*****************************

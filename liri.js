@@ -1,52 +1,45 @@
 require("dotenv").config();
-const Spotify = require("node-spotify-api");
 
-//variables
-const fs = require("fs");
-const keys = require("./keys.js");
-const request = require("request");
-const axios = require("axios");
-
-const spotify = new Spotify(keys.spotify);
+let request = require("request");
+let fs = require("fs");
+let keys = require("./keys.js");
+let Spotify = require("node-spotify-api");
+let axios = require("axios");
+let spotify = new Spotify(keys.spotify);
 
 let userOption = process.argv[2];
-let userInput = process.argv[3];
+// let trackName = process.argv.slice(3).join(" ");
 
-liriOption(userInput, userOption);
-//function
-function liriOption(userInput, userOption) {
-  switch (userOption) {
-    case "concert-this":
-      concertDetails(userInput);
-      break;
+switch (userOption) {
+  case "concert-this":
+    concertDetails();
+    break;
 
-    case "spotify-this-song":
-      songDetails(userInput);
-      break;
+  case "spotify-this-song":
+    songDetails();
+    break;
 
-    case "movie-this":
-      movieDetails(userInput);
-      break;
+  case "movie-this":
+    movieDetails();
+    break;
 
-    case "do-what-it-says":
-      showRandom(userInput);
-      break;
+  case "do-what-it-says":
+    showRandom();
+    break;
 
-    default:
-      console.log(
-        "choose something: \nconcert-this \nspotify-this-song \nmovie-this \ndo-what-it-says"
-      );
-      break;
-  }
+  default:
+    console.log(
+      "choose something: \nconcert-this \nspotify-this-song \nmovie-this \ndo-what-it-says"
+    );
 }
 
 //band in town info
-function concertDetails(userInput) {
+function concertDetails() {
+  let concertName = process.argv[3];
   let url =
     "https://rest.bandsintown.com/artists/" +
-    userInput +
+    concertName +
     "/events?app_id=codingbootcamp";
-  console.log(userInput);
   request(url, function(error, response, body) {
     if (!error && response.statusCode === 200) {
       var event = JSON.parse(body);
@@ -78,15 +71,16 @@ function concertDetails(userInput) {
     }
   });
 }
-
-function songDetails(userInput) {
-  if (userInput === "" || userInput === undefined) {
-    userInput = "Walking the wire";
+//spotify
+function songDetails() {
+  var trackName = process.argv[3];
+  if (trackName === "" || trackName === undefined) {
+    trackName = "Walking the wire";
   }
   spotify.search(
     {
       type: "track",
-      query: userInput
+      query: trackName
     },
     function(err, data) {
       if (err) {
@@ -103,13 +97,19 @@ function songDetails(userInput) {
         console.log(i);
         fs.appendFileSync("log.txt", i + "\n");
         console.log("Track name : " + songs[i].name);
-        fs.appendFileSync("log.txt", `Track name: ${songs[i].name}`);
+        fs.appendFileSync("log.txt", "Track name: " + songs[i].name + "\n");
         console.log("Preview Track : " + songs[i].preview_url);
-        fs.appendFileSync("log.txt", `Preview Track: ${songs[i].preview_url}`);
+        fs.appendFileSync(
+          "log.txt",
+          "Preview Track: " + songs[i].preview_url + "\n"
+        );
         console.log("Album : " + songs[i].album.name);
-        fs.appendFileSync("log.txt", `Album: ${songs[i].album.name}`);
+        fs.appendFileSync("log.txt", "Album: " + songs[i].album.name + "\n");
         console.log("Artist(s) : " + songs[i].artists[0].name);
-        fs.appendFileSync("log.txt", `Artist(s): ${songs[i].album.name}`);
+        fs.appendFileSync(
+          "log.txt",
+          "Artist(s): " + songs[i].artists[0].name + "\n"
+        );
         console.log("_____________________________________");
         fs.appendFileSync("log.txt", "_____________________________________");
       }
@@ -117,9 +117,11 @@ function songDetails(userInput) {
   );
 }
 
-function movieDetails(userInput) {
-  if (userInput === "" || userInput === undefined) {
-    userInput = "Mr. Nobody";
+//movie
+function movieDetails() {
+  var movieName = process.argv[3];
+  if (movieName === "" || movieName === undefined) {
+    movieName = "Mr. Nobody";
     console.log("_________Mr. Noboby________");
     fs.appendFileSync("log.txt", "_________Mr. Noboby________");
     console.log(
@@ -135,7 +137,7 @@ function movieDetails(userInput) {
   }
 
   let queryUrl =
-    "http://www.omdbapi.com/?t=" + userInput + "&y=&plot=short&apikey=7b81c33";
+    "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
   console.log(queryUrl);
   axios
     .get(queryUrl)
@@ -146,29 +148,22 @@ function movieDetails(userInput) {
         "___________ Movie Information ___________\n"
       );
 
-      console.log("This movie Title is: " + response.Title);
-      fs.appendFileSync("log.txt", `Title: ${response.Title} \n`);
+      console.log("This movie Title is: " + response.data.Title);
+      fs.appendFileSync("log.txt", `Title: ${response.data.Title} \n`);
 
-      console.log("This movie was made in the year: " + response.Year);
-      fs.appendFileSync("log.txt", `Release Year: ${response.Year} \n`);
+      console.log("This movie was made in the year: " + response.data.Year);
+      fs.appendFileSync("log.txt", `Release Year: ${response.data.Year} \n`);
 
-      console.log("IMDB rating: " + response.imdbRating);
-      fs.appendFileSync("log.txt", `IMDB Rating: ${response.imdbRating} \n`);
-
-      console.log("Rotten Tomatoes Rating: " + response.Ratings[1].value);
+      console.log("IMDB rating: " + response.data.imdbRating);
       fs.appendFileSync(
         "log.txt",
-        `Rotten Tomatoes Rating: ${response.Ratings[1].value} \n`
+        `IMDB Rating: ${response.data.imdbRating} \n`
       );
 
-      console.log(
-        "Rotten Tomatoes Rating: " + getRottenTomatoesRatingValue(response)
-      );
+      console.log("Rotten Tomatoes Rating: " + response.data.Ratings[1].value);
       fs.appendFileSync(
         "log.txt",
-        "Rotten Tomatoes Rating: " +
-          getRottenTomatoesRatingValue(response) +
-          "\n"
+        `Rotten Tomatoes Rating: ${response.data.Ratings[1].value} \n`
       );
 
       console.log("Language: " + response.Language);
@@ -184,28 +179,11 @@ function movieDetails(userInput) {
       fs.appendFileSync("log.txt", `Casts: ${response.Actors} \n`);
     })
     .catch(function(error) {
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        console.log("---------------Data---------------");
-        console.log(error.response.data);
-        console.log("---------------Status---------------");
-        console.log(error.response.status);
-        console.log("---------------Status---------------");
-        console.log(error.response.headers);
-      } else if (error.request) {
-        // The request was made but no response was received
-        // `error.request` is an object that comes back with details pertaining to the error that occurred.
-        console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log("Error", error.message);
-      }
-      console.log(error.config);
+      console.log(error);
     });
 }
 
-showRandom = () => {
+function showRandom() {
   fs.readFile("random.txt", "utf8", function(err, data) {
     if (err) {
       return console.log(err);
@@ -214,4 +192,4 @@ showRandom = () => {
     var txtArr = data.split(",");
     liriOption(txtArr[0], txtArr[1]);
   });
-};
+}

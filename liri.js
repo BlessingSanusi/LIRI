@@ -8,37 +8,40 @@ let axios = require("axios");
 let spotify = new Spotify(keys.spotify);
 
 let userOption = process.argv[2];
-// let trackName = process.argv.slice(3).join(" ");
+let userInput = process.argv[3];
 
-switch (userOption) {
-  case "concert-this":
-    concertDetails();
-    break;
+//function
+function liriOption(userInput, userOption) {
+  switch (userOption) {
+    case "concert-this":
+      concertDetails(userInput);
+      break;
 
-  case "spotify-this-song":
-    songDetails();
-    break;
+    case "spotify-this-song":
+      songDetails(userInput);
+      break;
 
-  case "movie-this":
-    movieDetails();
-    break;
+    case "movie-this":
+      movieDetails(userInput);
+      break;
 
-  case "do-what-it-says":
-    showRandom();
-    break;
+    case "do-what-it-says":
+      showRandom(userInput);
+      break;
 
-  default:
-    console.log(
-      "choose something: \nconcert-this \nspotify-this-song \nmovie-this \ndo-what-it-says"
-    );
+    default:
+      console.log(
+        "choose something: \nconcert-this \nspotify-this-song \nmovie-this \ndo-what-it-says"
+      );
+      break;
+  }
 }
 
 //band in town info
-function concertDetails() {
-  let concertName = process.argv[3];
+function concertDetails(userInput) {
   let url =
     "https://rest.bandsintown.com/artists/" +
-    concertName +
+    userInput +
     "/events?app_id=codingbootcamp";
   request(url, function(error, response, body) {
     if (!error && response.statusCode === 200) {
@@ -72,15 +75,14 @@ function concertDetails() {
   });
 }
 //spotify
-function songDetails() {
-  var trackName = process.argv[3];
-  if (trackName === "" || trackName === undefined) {
-    trackName = "Walking the wire";
+function songDetails(userInput) {
+  if (userInput === "" || userInput === undefined) {
+    userInput = "Walking the wire";
   }
   spotify.search(
     {
       type: "track",
-      query: trackName
+      query: userInput
     },
     function(err, data) {
       if (err) {
@@ -118,10 +120,9 @@ function songDetails() {
 }
 
 //movie
-function movieDetails() {
-  var movieName = process.argv[3];
-  if (movieName === "" || movieName === undefined) {
-    movieName = "Mr. Nobody";
+function movieDetails(userInput) {
+  if (userInput === "" || userInput === undefined) {
+    userInput = "Mr. Nobody";
     console.log("_________Mr. Noboby________");
     fs.appendFileSync("log.txt", "_________Mr. Noboby________");
     console.log(
@@ -137,7 +138,7 @@ function movieDetails() {
   }
 
   let queryUrl =
-    "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
+    "http://www.omdbapi.com/?t=" + userInput + "&y=&plot=short&apikey=trilogy";
   console.log(queryUrl);
   axios
     .get(queryUrl)
@@ -193,3 +194,4 @@ function showRandom() {
     liriOption(txtArr[0], txtArr[1]);
   });
 }
+liriOption(userInput, userOption);

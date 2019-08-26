@@ -8,7 +8,7 @@ let axios = require("axios");
 let spotify = new Spotify(keys.spotify);
 
 let userOption = process.argv[2];
-let userInput = process.argv[3];
+let userInput = process.argv.slice(3).join(" ");
 
 //function
 function liriOption(userInput, userOption) {
@@ -39,6 +39,8 @@ function liriOption(userInput, userOption) {
 
 //band in town info
 function concertDetails(userInput) {
+  console.log("Concert Details");
+  console.log(userInput);
   let url =
     "https://rest.bandsintown.com/artists/" +
     userInput +
@@ -46,11 +48,18 @@ function concertDetails(userInput) {
   request(url, function(error, response, body) {
     if (!error && response.statusCode === 200) {
       var event = JSON.parse(body);
+
+      if (event.length < 1) {
+        console.log("No concert details");
+      }
+
       for (var i = 0; i < event.length; i++) {
         console.log("_______EVENT INFO_________");
         fs.appendFileSync("log.txt", "_______EVENT INFO_________\n");
         console.log(i);
         fs.appendFileSync("log.txt", i + "\n");
+        console.log("Name of artist: " + userInput);
+        fs.appendFileSync("log.txt", userInput + "\n");
         console.log("Name of the Venue: " + event[i].venue.name);
         fs.appendFileSync(
           "log.txt",
@@ -79,44 +88,33 @@ function songDetails(userInput) {
   if (userInput === "" || userInput === undefined) {
     userInput = "Walking the wire";
   }
-  spotify.search(
-    {
-      type: "track",
-      query: userInput
-    },
-    function(err, data) {
-      if (err) {
-        return console.log(err);
-      }
+  console.log(userInput);
+  spotify
+    .search({ type: "track", query: userInput })
+    .then(function(response) {
+      for (var i = 0; i < 5; i++) {
+        var songInfo =
+          "___________________ Song Info ________________" +
+          "\nArtist(s): " +
+          response.tracks.items[i].artists[0].name +
+          "\nSong Name: " +
+          response.tracks.items[i].name +
+          "\nAlbum Name: " +
+          response.tracks.items[i].album.name +
+          "\nPreview Link: " +
+          response.tracks.items[i].preview_url;
+        console.log(`${songInfo} \n`);
 
-      let songs = data.tracks.items;
-      for (var i; i < songs.length; i++) {
-        console.log("___________ Track Information ___________");
         fs.appendFileSync(
           "log.txt",
-          "___________ Track Information ___________\n"
+          `______________ Song Info _____________ \n`
         );
-        console.log(i);
-        fs.appendFileSync("log.txt", i + "\n");
-        console.log("Track name : " + songs[i].name);
-        fs.appendFileSync("log.txt", "Track name: " + songs[i].name + "\n");
-        console.log("Preview Track : " + songs[i].preview_url);
-        fs.appendFileSync(
-          "log.txt",
-          "Preview Track: " + songs[i].preview_url + "\n"
-        );
-        console.log("Album : " + songs[i].album.name);
-        fs.appendFileSync("log.txt", "Album: " + songs[i].album.name + "\n");
-        console.log("Artist(s) : " + songs[i].artists[0].name);
-        fs.appendFileSync(
-          "log.txt",
-          "Artist(s): " + songs[i].artists[0].name + "\n"
-        );
-        console.log("_____________________________________");
-        fs.appendFileSync("log.txt", "_____________________________________");
+        fs.appendFileSync("log.txt", `${songInfo} \n`);
       }
-    }
-  );
+    })
+    .catch(function(err) {
+      console.log(err);
+    });
 }
 
 //movie
@@ -161,23 +159,23 @@ function movieDetails(userInput) {
         `IMDB Rating: ${response.data.imdbRating} \n`
       );
 
-      console.log("Rotten Tomatoes Rating: " + response.data.Ratings[1].value);
+      console.log("Rotten Tomatoes Rating: " + response.data.Ratings[1].Value);
       fs.appendFileSync(
         "log.txt",
         `Rotten Tomatoes Rating: ${response.data.Ratings[1].value} \n`
       );
 
-      console.log("Language: " + response.Language);
-      fs.appendFileSync("log.txt", `Language: ${response.Language} \n`);
+      console.log("Language: " + response.data.Language);
+      fs.appendFileSync("log.txt", `Language: ${response.data.Language} \n`);
 
-      console.log("This movie was made in: " + response.Country);
-      fs.appendFileSync("log.txt", `Country: ${response.Country} \n`);
+      console.log("This movie was made in: " + response.data.Country);
+      fs.appendFileSync("log.txt", `Country: ${response.data.Country} \n`);
 
-      console.log("The plot of this movie is: " + response.Plot);
-      fs.appendFileSync("log.txt", `Short plot: ${response.Plot} \n`);
+      console.log("The plot of this movie is: " + response.data.Plot);
+      fs.appendFileSync("log.txt", `Short plot: ${response.data.Plot} \n`);
 
-      console.log("The actors in this movie are: " + response.Actors);
-      fs.appendFileSync("log.txt", `Casts: ${response.Actors} \n`);
+      console.log("The actors in this movie are: " + response.data.Actors);
+      fs.appendFileSync("log.txt", `Casts: ${response.data.Actors} \n`);
     })
     .catch(function(error) {
       console.log(error);
@@ -189,9 +187,13 @@ function showRandom() {
     if (err) {
       return console.log(err);
     }
+    console.log(data);
 
     var txtArr = data.split(",");
-    liriOption(txtArr[0], txtArr[1]);
+    console.log(txtArr);
+    songDetails(txtArr[1]);
+
+    fs.appendFileSync("log.txt", `Song Info: ${txtArr[1]} \n`);
   });
 }
 liriOption(userInput, userOption);

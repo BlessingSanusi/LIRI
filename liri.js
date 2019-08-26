@@ -6,6 +6,8 @@ let keys = require("./keys.js");
 let Spotify = require("node-spotify-api");
 let axios = require("axios");
 let spotify = new Spotify(keys.spotify);
+let moment = require("moment");
+moment().format();
 
 let userOption = process.argv[2];
 let userInput = process.argv.slice(3).join(" ");
@@ -52,7 +54,7 @@ function concertDetails(userInput) {
       if (event.length < 1) {
         console.log("No concert details");
       }
-
+      // let formattedDate = moment(event[i].datetime).format("LLLL");
       for (var i = 0; i < event.length; i++) {
         console.log("_______EVENT INFO_________");
         fs.appendFileSync("log.txt", "_______EVENT INFO_________\n");
@@ -70,10 +72,14 @@ function concertDetails(userInput) {
           "log.txt",
           "Venue Location: " + event[i].venue.city + "\n"
         );
-        console.log("Date of the Event: " + event[i].datetime);
+        console.log(
+          "Date of the Event: " + moment(event[i].datetime).format("MM-DD-YYYY")
+        );
         fs.appendFileSync(
           "log.txt",
-          "Date of the Event: " + event[i].datetime + "\n"
+          "Date of the Event: " +
+            moment(event[i].datetime).format("MM-DD-YYYY") +
+            "\n"
         );
         console.log("*****************************");
         fs.appendFileSync("log.txt", "*****************************" + "\n");

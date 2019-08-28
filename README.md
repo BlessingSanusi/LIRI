@@ -11,8 +11,8 @@
 
 ### How to run
 - Open CMD or Git Bash
-- Navigate to the folder(liri.js)
-- Type node liri.js <choose a command> <name of artist or band or song>
+- Navigate to the folder(liri)
+- Type node liri.js <choose a command> <name of artist name or band name or movie name>
     - Example: spotify-this-song option
       - node liri.js spotify-this-song next to me
 

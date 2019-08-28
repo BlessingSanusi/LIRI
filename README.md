@@ -9,6 +9,13 @@
 - movie-this
 - do-what-it-says
 
+### How to run
+- Open CMD or Git Bash
+- Navigate to the folder(liri.js)
+- Type node liri.js <choose a command> <name of artist or band or song>
+    - Example: spotify-this-song option
+      - node liri.js spotify-this-song next to me
+
 ## Example of concert-this
 
 ![concert-this image](/img/concertInfo.png)
